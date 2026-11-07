@@ -25,6 +25,7 @@ PAGES = [  # (file, nav label, title)
     ("evidence.html", "What works", "Evidence from trials"),
     ("trials.html", "Prevention trials", "Drug prevention trials"),
     ("resources.html", "Resources", "Data resources"),
+    ("papers.html", "Papers", "Key papers"),
     ("about.html", "About", "About"),
 ]
 
@@ -61,7 +62,10 @@ def shell(fname, title, body):
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{doc_title}</title>
 <meta name="description" content="{DESC}">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta property="og:title" content="{doc_title}">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
 <meta property="og:description" content="{DESC}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -135,19 +139,28 @@ pages["index.html"] = f"""    <div class="hero">
 
 # ---------- Risk factors ----------
 risk_rows = [
-    ("Early life", "Less education"),
-    ("Midlife", "Hearing loss"), ("Midlife", "High LDL cholesterol"), ("Midlife", "Depression"),
-    ("Midlife", "Traumatic brain injury"), ("Midlife", "Physical inactivity"), ("Midlife", "Diabetes"),
-    ("Midlife", "Smoking"), ("Midlife", "High blood pressure"), ("Midlife", "Obesity"),
-    ("Midlife", "Excessive alcohol"),
-    ("Later life", "Social isolation"), ("Later life", "Air pollution"), ("Later life", "Untreated vision loss"),
+    ("Early life", "Less education", "Good-quality education for all children; keep learning throughout life"),
+    ("Midlife", "Hearing loss", "Get hearing tested; use hearing aids if needed"),
+    ("Midlife", "High LDL cholesterol", "Check cholesterol from about age 40 and treat if high"),
+    ("Midlife", "Depression", "Seek treatment for depression"),
+    ("Midlife", "Traumatic brain injury", "Wear helmets and seatbelts; protect against head injury in sport"),
+    ("Midlife", "Physical inactivity", "Stay physically active through life"),
+    ("Midlife", "Diabetes", "Prevent and manage diabetes"),
+    ("Midlife", "Smoking", "Stop smoking, at any age"),
+    ("Midlife", "High blood pressure", "Check blood pressure and treat if high"),
+    ("Midlife", "Obesity", "Maintain a healthy weight"),
+    ("Midlife", "Excessive alcohol", "Limit alcohol"),
+    ("Later life", "Social isolation", "Stay socially connected"),
+    ("Later life", "Air pollution", "Reduce exposure to air pollution where possible"),
+    ("Later life", "Untreated vision loss", "Get eyes checked; treat vision problems such as cataracts"),
 ]
 pages["risk.html"] = head("Risk factors", "Fourteen risk factors you can change",
     "The 2024 Lancet Commission estimated that about 45% of dementia worldwide is linked to 14 modifiable risk factors across the life course.") + f"""
     <section>
-{table("Modifiable risk factors", ["Life stage", "Risk factor"], risk_rows)}
+{table("Modifiable risk factors", ["Life stage", "Risk factor", "What can help"], risk_rows)}
       <div class="prose" style="margin-top:24px">
         <p>Two factors were new in 2024: high LDL cholesterol in midlife, estimated to account for about 7% of dementia, and untreated vision loss in later life, about 2%.{cite(LANCET)}</p>
+        <p>The suggested actions follow the Commission’s recommendations; they are general advice, not a personal plan.{cite(LANCET)}</p>
         <p>The 45% estimate assumes each factor is causal and could be removed entirely, so it shows the size of the opportunity rather than a promise for any one person.</p>
         <p>Genes matter too. Two copies of APOE4 raise risk far more than any single factor here; see the sister site {src("https://apoe4.science", "apoe4.science")}.</p>
       </div>
@@ -202,6 +215,28 @@ pages["resources.html"] = head("Resources", "Data for prevention research",
       <p class="note">For APOE-specific data sources, see {src("https://apoe4.science/resources.html", "apoe4.science Resources")}.</p>
     </section>"""
 
+
+# ---------- Papers ----------
+PAPERS = [
+    ("Risk factors", [
+        ("Livingston G, et al. Dementia prevention, intervention, and care: 2024 report of the Lancet standing Commission. <i>Lancet</i> 2024.", "The 14 modifiable risk factors and the 45% estimate.", LANCET),
+    ]),
+    ("Lifestyle and medical trials", [
+        ("Ngandu T, et al. A 2 year multidomain intervention of diet, exercise, cognitive training, and vascular risk monitoring versus control to prevent cognitive decline in at-risk elderly people (FINGER): a randomised controlled trial. <i>Lancet</i> 2015.", "First large trial to show a multidomain lifestyle program helps cognition.", "https://doi.org/10.1016/S0140-6736(15)60461-5"),
+        ("SPRINT MIND Investigators (Williamson JD, et al.). Effect of intensive vs standard blood pressure control on probable dementia. <i>JAMA</i> 2019.", "Intensive blood pressure control reduced mild cognitive impairment.", "https://doi.org/10.1001/jama.2018.21442"),
+        ("Lin FR, et al. Hearing intervention versus health education control to reduce cognitive decline in older adults with hearing loss in the USA (ACHIEVE). <i>Lancet</i> 2023.", "No overall effect; possible benefit in people at higher risk.", "https://doi.org/10.1016/S0140-6736(23)01406-X"),
+        ("U.S. POINTER Study Group. Two-year results of the U.S. POINTER lifestyle trial. Published in <i>JAMA</i>, July 2025.", "Both programs improved cognition; the structured one more.", "https://alz.org/us-pointer/study-results"),
+        ("Eyting M, et al. A natural experiment on the effect of herpes zoster vaccination on dementia. <i>Nature</i> 2025.", "Shingles vaccination linked to fewer new dementia diagnoses in Wales.", "https://flex.uni-frankfurt.de/?p=3429"),
+    ]),
+    ("Drug prevention trials", [
+        ("Sperling RA, et al. Trial of solanezumab in preclinical Alzheimer’s disease. <i>New England Journal of Medicine</i> 2023.", "The A4 Study: no slowing of decline.", "https://doi.org/10.1056/NEJMoa2305032"),
+        ("Donanemab in preclinical Alzheimer’s disease: screening and baseline data from TRAILBLAZER-ALZ 3. 2025.", "Who is enrolled in the largest ongoing prevention trial.", "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12439032/"),
+    ]),
+]
+pages["papers.html"] = head("Papers", "Key papers on prevention", "The studies behind this site, grouped by topic.") + "\n    <section>\n" + "".join(
+    f'    <div class="group">\n      <h2>{g}</h2>\n      <ul class="refs">\n' + "".join(f'        <li>{c} <a href="{u}">Read</a><p class="why">{w}</p></li>\n' for c, w, u in items) + "      </ul>\n    </div>\n"
+    for g, items in PAPERS) + "    </section>"
+
 # ---------- About ----------
 pages["about.html"] = head("About", "About this site",
     "What this resource is, who maintains it, and how information is chosen.") + f"""
@@ -224,4 +259,9 @@ OUT.joinpath("style.css").write_text(css)
 for fname, label, title in PAGES:
     OUT.joinpath(fname).write_text(shell(fname, title, pages[fname]))
 OUT.joinpath(".nojekyll").write_text("")
+OUT.joinpath("favicon.svg").write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#1f6f54"/><text x="32" y="45" text-anchor="middle" font-family="Georgia, serif" font-size="38" font-weight="600" fill="#ffffff">A</text></svg>\n')
+BASE = "https://moqri-lab.org/AlzPrevention/"
+OUT.joinpath("robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {BASE}sitemap.xml\n")
+OUT.joinpath("sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"  <url><loc>{BASE}{'' if f == 'index.html' else f}</loc></url>\n" for f, _, _ in PAGES) + "</urlset>\n")
+OUT.joinpath("404.html").write_text(shell("404.html", "Page not found", head("Page not found", "This page doesn’t exist", "It may have moved.") + '\n    <section><div class="prose"><p>Go to the <a href="index.html">home page</a>.</p></div></section>'))
 print("built", len(PAGES), "pages")
