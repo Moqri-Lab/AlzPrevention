@@ -193,7 +193,7 @@ tr_rows = [
     (src("https://clinicaltrials.gov/study/NCT04468659", "AHEAD 3-45"), "Lecanemab", "About 1,400 adults with amyloid but no symptoms", pill("run", "Fully enrolled") + " Primary completion expected December 2028."),
     (src("https://clinicaltrials.gov/study/NCT07399171", "HT-4253"), "Oral LRRK2 inhibitor", "112 biomarker-positive APOE4 carriers in Abu Dhabi", pill("recruit", "Recruiting") + " 48-week Phase 2a, started May 2026."),
     (src("https://clinicaltrials.gov/study/NCT02008357", "A4 Study"), "Solanezumab", "More than 1,100 adults with amyloid but no symptoms", pill("stop", "No benefit") + " Did not slow cognitive decline." + cite("https://doi.org/10.1056/NEJMoa2305032")),
-    ("API Colombia", "Crenezumab", "252 members of a Colombian family with an early-onset PSEN1 mutation", pill("stop", "No significant benefit") + " Numerical trends favoured the drug, none significant (2022)." + cite("https://www.businesswire.com/news/home/20220616005106/en/Genentech-Provides-Update-on-Alzheimers-Prevention-Initiative-Study-Evaluating-Crenezumab-in-Autosomal-Dominant-Alzheimers-Disease")),
+    (src("https://www.businesswire.com/news/home/20220616005106/en/Genentech-Provides-Update-on-Alzheimers-Prevention-Initiative-Study-Evaluating-Crenezumab-in-Autosomal-Dominant-Alzheimers-Disease", "API Colombia"), "Crenezumab", "252 members of a Colombian family with an early-onset PSEN1 mutation", pill("stop", "No significant benefit") + " Numerical trends favoured the drug, none significant (2022)." + cite("https://www.businesswire.com/news/home/20220616005106/en/Genentech-Provides-Update-on-Alzheimers-Prevention-Initiative-Study-Evaluating-Crenezumab-in-Autosomal-Dominant-Alzheimers-Disease")),
     (src("https://clinicaltrials.gov/study/NCT02565511", "Generation Study 1"), "Umibecestat or CAD106", "Cognitively unimpaired APOE4 homozygotes aged 60–75", pill("stop", "Stopped 2019") + " Umibecestat worsened cognition slightly; program ended."),
 ]
 pages["trials.html"] = head("Prevention trials", "Drug trials before symptoms",
@@ -238,7 +238,7 @@ PAPERS = [
     ]),
 ]
 pages["papers.html"] = head("Papers", "Key papers on prevention", "The studies behind this site, grouped by topic.") + "\n    <section>\n" + "".join(
-    f'    <div class="group">\n      <h2>{g}</h2>\n      <ul class="refs">\n' + "".join(f'        <li>{c} <a href="{u}">Read</a><p class="why">{w}</p></li>\n' for c, w, u in items) + "      </ul>\n    </div>\n"
+    f'    <div class="group">\n      <h2>{g}</h2>\n      <ul class="refs">\n' + "".join(f'        <li><a href="{u}">{c}</a><p class="why">{w}</p></li>\n' for c, w, u in items) + "      </ul>\n    </div>\n"
     for g, items in PAPERS) + "    </section>"
 
 # ---------- About ----------
