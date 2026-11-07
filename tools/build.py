@@ -133,7 +133,7 @@ pages["index.html"] = f"""    <div class="hero">
         <h1 style="margin-top:14px">Nearly half of dementia may be <em>preventable</em> or delayable.</h1>
         <p class="lede">The evidence on preventing Alzheimer’s disease, from everyday risk factors to drug trials in people who have no symptoms yet, with every figure linked to its source.</p>
       </div>
-      <div class="geno" aria-label="45 percent">45%<small>Share of dementia linked to 14 modifiable risk factors (Lancet Commission 2024)</small></div>
+      <div class="geno" aria-label="45 percent">45%<small>Share of dementia linked to 14 modifiable risk factors (<a href="{LANCET}">Lancet Commission 2024</a>)</small></div>
     </div>
     <section>
       <div class="cards">
