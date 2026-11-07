@@ -11,6 +11,7 @@ import re
 
 HERE = pathlib.Path(__file__).resolve().parent
 OUT = HERE.parent
+SITE_URL = "https://alzprevent.org/"
 SITE_NAME = "Alzheimer’s Prevention"
 DESC = "A community resource on preventing Alzheimer’s disease: risk factors, evidence, prevention trials and data."
 
@@ -55,6 +56,7 @@ def shell(fname, title, body):
         f'      <a href="{f}"' + (' aria-current="page"' if f == fname else "") + f">{label}</a>"
         for f, label, _ in PAGES)
     doc_title = SITE_NAME if fname == "index.html" else f"{title} · {SITE_NAME}"
+    page_url = SITE_URL + ("" if fname == "index.html" else fname)
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -65,6 +67,8 @@ def shell(fname, title, body):
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta property="og:title" content="{doc_title}">
 <meta property="og:type" content="website">
+<meta property="og:url" content="{page_url}">
+<link rel="canonical" href="{page_url}">
 <meta name="twitter:card" content="summary">
 <meta property="og:description" content="{DESC}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -260,7 +264,8 @@ for fname, label, title in PAGES:
     OUT.joinpath(fname).write_text(shell(fname, title, pages[fname]))
 OUT.joinpath(".nojekyll").write_text("")
 OUT.joinpath("favicon.svg").write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#1f6f54"/><text x="32" y="45" text-anchor="middle" font-family="Georgia, serif" font-size="38" font-weight="600" fill="#ffffff">A</text></svg>\n')
-BASE = "https://moqri-lab.org/AlzPrevention/"
+BASE = SITE_URL
+OUT.joinpath("CNAME").write_text("alzprevent.org\n")
 OUT.joinpath("robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {BASE}sitemap.xml\n")
 OUT.joinpath("sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"  <url><loc>{BASE}{'' if f == 'index.html' else f}</loc></url>\n" for f, _, _ in PAGES) + "</urlset>\n")
 OUT.joinpath("404.html").write_text(shell("404.html", "Page not found", head("Page not found", "This page doesn’t exist", "It may have moved.") + '\n    <section><div class="prose"><p>Go to the <a href="index.html">home page</a>.</p></div></section>'))
