@@ -80,7 +80,7 @@ def shell(fname, title, body):
 <a class="skip" href="#main">Skip to content</a>
 <div class="wrap">
   <header class="top">
-    <a class="mark" href="index.html">alzheimer’s<span>.</span>prevention</a>
+    <a class="mark" href="index.html">alz<span>prevent</span>.org</a>
     <nav aria-label="Pages">
 {nav}
     </nav>
