@@ -246,7 +246,7 @@ tr_rows = []
 for name, url, drug, who, n, res in TRIALS:
     ext = "Registry" if "clinicaltrials.gov" in url else "Source"
     drug_cell = drug_link(drug) + (" or " + drug_link("CAD106") if name == "Generation Study 1" else "")
-    tr_rows.append((f'<span class="dname">{name}</span>' + link_pair(f"drugs.html#{slug('drug', drug)}", "Drug", url, ext),
+    tr_rows.append((f'<span class="dname">{name}</span>' + link_pair(None, "", url, ext),
                     drug_cell, who, n, pill_link(res, url)))
 pages["trials.html"] = head("Prevention trials", "Drug trials before symptoms",
     "Trials that treat people who have Alzheimer’s changes, or very high genetic risk, before memory problems begin. Ongoing trials first.") + f"""
