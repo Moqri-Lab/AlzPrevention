@@ -119,9 +119,9 @@ def slug(prefix, name):
 def link_pair(internal_href, internal_text, external_href, external_text):
     out = '<span class="xlinks">'
     if internal_href:
-        out += f'<a class="lnk-int" href="{internal_href}">→ {internal_text}</a>'
+        out += f'<a class="lnk-int" href="{internal_href}">See {internal_text.lower()}</a>'
     if external_href:
-        out += f'<a class="lnk-ext" href="{external_href}">↗ {external_text}</a>'
+        out += f'<a class="lnk-ext" href="{external_href}">{external_text} ↗</a>'
     return out + "</span>"
 
 
@@ -353,10 +353,13 @@ css += """
 .pill.stop{color:var(--stop)}
 .dname{font-weight:600;display:block}
 .maker{display:block;font-weight:400;font-size:13px;color:var(--muted);margin-top:2px}
-.xlinks{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:6px;font-size:13px;font-weight:400}
+.xlinks{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 14px;margin-top:4px;font-size:13px;font-weight:400}
+.xlinks .sep{color:var(--muted)}
 .xlinks a{white-space:nowrap}
-a.lnk-int{color:var(--e4);text-decoration:none;border-bottom:1px solid currentColor}
-a.lnk-ext{color:var(--muted);text-decoration:underline dotted;text-underline-offset:3px}
+a.lnk-int{color:var(--e4);text-decoration:none}
+a.lnk-int:hover{text-decoration:underline}
+a.lnk-ext{color:var(--muted);text-decoration:none}
+a.lnk-ext:hover{text-decoration:underline}
 a.pill-link{text-decoration:none}
 table.data tr[id]{scroll-margin-top:24px}
 table.data tr:target td{background:var(--e4-soft)}
