@@ -12,6 +12,8 @@ import re
 HERE = pathlib.Path(__file__).resolve().parent
 OUT = HERE.parent
 SITE_URL = "https://alzprevent.org/"
+# Cloudflare Web Analytics site token (cookie-free). Leave empty to turn analytics off.
+CF_ANALYTICS_TOKEN = ""
 SITE_NAME = "Alzheimer’s Prevention"
 DESC = "A community resource on preventing Alzheimer’s disease: risk factors, evidence, prevention trials and data."
 
@@ -94,6 +96,7 @@ def shell(fname, title, body):
     <span class="updated">Last reviewed November 2026</span>
   </footer>
 </div>
+{('<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon=' + chr(39) + '{"token": "' + CF_ANALYTICS_TOKEN + '"}' + chr(39) + '></script>') if CF_ANALYTICS_TOKEN else ''}
 </body>
 </html>
 """
