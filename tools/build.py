@@ -98,6 +98,16 @@ def shell(fname, title, body):
 """
 
 
+def new_tabs(html, own="alzprevent.org"):
+    """Open links to other sites in a new tab."""
+    def fix(m):
+        tag, url = m.group(0), m.group(1)
+        if own in url or "target=" in tag:
+            return tag
+        return tag[:-1] + ' target="_blank" rel="noopener">'
+    return re.sub(r'<a\b[^>]*\bhref="(https?://[^"]+)"[^>]*>', fix, html)
+
+
 def table(label, cols, rows):
     th = "".join(f"<th>{c}</th>" for c in cols)
     trs = "\n".join(
@@ -261,12 +271,12 @@ css += """
 """
 OUT.joinpath("style.css").write_text(css)
 for fname, label, title in PAGES:
-    OUT.joinpath(fname).write_text(shell(fname, title, pages[fname]))
+    OUT.joinpath(fname).write_text(new_tabs(shell(fname, title, pages[fname])))
 OUT.joinpath(".nojekyll").write_text("")
 OUT.joinpath("favicon.svg").write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#1f6f54"/><text x="32" y="45" text-anchor="middle" font-family="Georgia, serif" font-size="38" font-weight="600" fill="#ffffff">A</text></svg>\n')
 BASE = SITE_URL
 OUT.joinpath("CNAME").write_text("alzprevent.org\n")
 OUT.joinpath("robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {BASE}sitemap.xml\n")
 OUT.joinpath("sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"  <url><loc>{BASE}{'' if f == 'index.html' else f}</loc></url>\n" for f, _, _ in PAGES) + "</urlset>\n")
-OUT.joinpath("404.html").write_text(shell("404.html", "Page not found", head("Page not found", "This page doesn’t exist", "It may have moved.") + '\n    <section><div class="prose"><p>Go to the <a href="index.html">home page</a>.</p></div></section>'))
+OUT.joinpath("404.html").write_text(new_tabs(shell("404.html", "Page not found", head("Page not found", "This page doesn’t exist", "It may have moved.") + '\n    <section><div class="prose"><p>Go to the <a href="index.html">home page</a>.</p></div></section>')))
 print("built", len(PAGES), "pages")
