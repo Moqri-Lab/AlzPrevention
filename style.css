@@ -177,3 +177,12 @@ span.asof{font-family:var(--mono);font-size:13px;color:var(--muted)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--stop:#ec6b93}}
 :root[data-theme="dark"]{--stop:#ec6b93}
 .pill.stop{color:var(--stop)}
+.dname{font-weight:600;display:block}
+.maker{display:block;font-weight:400;font-size:13px;color:var(--muted);margin-top:2px}
+.xlinks{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:6px;font-size:13px;font-weight:400}
+.xlinks a{white-space:nowrap}
+a.lnk-int{color:var(--e4);text-decoration:none;border-bottom:1px solid currentColor}
+a.lnk-ext{color:var(--muted);text-decoration:underline dotted;text-underline-offset:3px}
+a.pill-link{text-decoration:none}
+table.data tr[id]{scroll-margin-top:24px}
+table.data tr:target td{background:var(--e4-soft)}

@@ -24,6 +24,7 @@ PAGES = [  # (file, nav label, title)
     ("index.html", "Home", SITE_NAME),
     ("risk.html", "Risk factors", "Modifiable risk factors"),
     ("evidence.html", "What works", "Evidence from trials"),
+    ("drugs.html", "Drugs", "Drugs"),
     ("trials.html", "Prevention trials", "Drug prevention trials"),
     ("resources.html", "Resources", "Data resources"),
     ("papers.html", "Papers", "Key papers"),
@@ -108,11 +109,29 @@ def new_tabs(html, own="alzprevent.org"):
     return re.sub(r'<a\b[^>]*\bhref="(https?://[^"]+)"[^>]*>', fix, html)
 
 
-def table(label, cols, rows):
+def slug(prefix, name):
+    return prefix + "-" + re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+
+
+def link_pair(internal_href, internal_text, external_href, external_text):
+    out = '<span class="xlinks">'
+    if internal_href:
+        out += f'<a class="lnk-int" href="{internal_href}">→ {internal_text}</a>'
+    if external_href:
+        out += f'<a class="lnk-ext" href="{external_href}">↗ {external_text}</a>'
+    return out + "</span>"
+
+
+def pill_link(res, url):
+    return re.sub(r'<span class="pill ([a-z]+)">([^<]*)</span>', lambda m: f'<a class="pill-link" href="{url}" title="Open external record"><span class="pill {m.group(1)}">{m.group(2)} ↗</span></a>', res, count=1)
+
+
+def table(label, cols, rows, ids=None):
     th = "".join(f"<th>{c}</th>" for c in cols)
+    ids = ids or [None] * len(rows)
     trs = "\n".join(
-        "            <tr>" + "".join(f'<td data-label="{c}"><span>{v}</span></td>' for c, v in zip(cols, r)) + "</tr>"
-        for r in rows)
+        "            <tr" + (f' id="{i}"' if i else "") + ">" + "".join(f'<td data-label="{c}"><span>{v}</span></td>' for c, v in zip(cols, r)) + "</tr>"
+        for r, i in zip(rows, ids))
     return f"""      <div class="alleles" role="region" aria-label="{label}" tabindex="0">
         <table class="data">
           <thead><tr>{th}</tr></thead>
@@ -135,7 +154,7 @@ cards = [
     ("trials.html", "Prevention trials", "Drug trials in people with Alzheimer’s changes but no symptoms."),
     ("resources.html", "Resources", "Cohorts and datasets for prevention research."),
     ("https://apoe4.science", "APOE4 carriers", "Sister site for people with two copies of APOE4, the highest-risk common genotype."),
-    ("about.html", "About", "Who maintains this site and how sources are chosen."),
+    ("drugs.html", "Drugs", "Medicines tested for prevention, and those with early signals."),
 ]
 pages["index.html"] = f"""    <div class="hero">
       <div>
@@ -192,26 +211,87 @@ ev_rows = [
 pages["evidence.html"] = head("What works", "Evidence from trials and natural experiments",
     "Randomized trials of lifestyle and medical approaches, and the strongest natural experiments, on preventing cognitive decline and dementia.") + f"""
     <section>
-{table("Prevention evidence", ["Study", "Intervention", "Who", "Result"], ev_rows)}
+{table("Prevention evidence", ["Study", "Intervention", "Who", "Result"], ev_rows, ids=["ev-finger", "ev-us-pointer", "ev-sprint-mind", "ev-achieve", "ev-shingles"])}
       <p class="note">Benefits so far are on cognitive test scores or milder outcomes; no lifestyle trial has yet shown fewer dementia diagnoses as its main result.</p>
 {DISCLAIMER}
     </section>"""
 
 # ---------- Trials ----------
-tr_rows = [
-    (src("https://clinicaltrials.gov/study/NCT05026866", "TRAILBLAZER-ALZ 3"), "Donanemab", "About 3,000 cognitively unimpaired adults with Alzheimer’s pathology", pill("run", "Fully enrolled") + " Primary completion expected October 2027."),
-    (src("https://clinicaltrials.gov/study/NCT04468659", "AHEAD 3-45"), "Lecanemab", "About 1,400 adults with amyloid but no symptoms", pill("run", "Fully enrolled") + " Primary completion expected December 2028."),
-    (src("https://clinicaltrials.gov/study/NCT07399171", "HT-4253"), "Oral LRRK2 inhibitor", "112 biomarker-positive APOE4 carriers in Abu Dhabi", pill("recruit", "Recruiting") + " 48-week Phase 2a, started May 2026."),
-    (src("https://clinicaltrials.gov/study/NCT02008357", "A4 Study"), "Solanezumab", "More than 1,100 adults with amyloid but no symptoms", pill("stop", "No benefit") + " Did not slow cognitive decline." + cite("https://doi.org/10.1056/NEJMoa2305032")),
-    (src("https://www.businesswire.com/news/home/20220616005106/en/Genentech-Provides-Update-on-Alzheimers-Prevention-Initiative-Study-Evaluating-Crenezumab-in-Autosomal-Dominant-Alzheimers-Disease", "API Colombia"), "Crenezumab", "252 members of a Colombian family with an early-onset PSEN1 mutation", pill("stop", "No significant benefit") + " Numerical trends favoured the drug, none significant (2022)." + cite("https://www.businesswire.com/news/home/20220616005106/en/Genentech-Provides-Update-on-Alzheimers-Prevention-Initiative-Study-Evaluating-Crenezumab-in-Autosomal-Dominant-Alzheimers-Disease")),
-    (src("https://clinicaltrials.gov/study/NCT02565511", "Generation Study 1"), "Umibecestat or CAD106", "Cognitively unimpaired APOE4 homozygotes aged 60–75", pill("stop", "Stopped 2019") + " Umibecestat worsened cognition slightly; program ended."),
+# (name, registry or record URL, drug as named on the Drugs page, who, participants, status-and-result)
+TRIALS = [
+    ("TRAILBLAZER-ALZ 3", "https://clinicaltrials.gov/study/NCT05026866", "Donanemab", "Cognitively unimpaired adults with Alzheimer’s pathology", "About 3,000 enrolled",
+     pill("run", "Fully enrolled") + " Primary completion expected October 2027."),
+    ("AHEAD 3-45", "https://clinicaltrials.gov/study/NCT04468659", "Lecanemab", "Adults with amyloid but no symptoms", "About 1,400 enrolled",
+     pill("run", "Fully enrolled") + " Primary completion expected December 2028."),
+    ("HT-4253", "https://clinicaltrials.gov/study/NCT07399171", "HT-4253", "Biomarker-positive APOE4 carriers in Abu Dhabi", "112 planned",
+     pill("recruit", "Recruiting") + " 48-week Phase 2a, started May 2026."),
+    ("A4 Study", "https://clinicaltrials.gov/study/NCT02008357", "Solanezumab", "Adults aged 65–85 with amyloid but no symptoms", "1,169 randomized",
+     pill("stop", "No benefit") + " Did not slow cognitive decline." + cite("https://doi.org/10.1056/NEJMoa2305032")),
+    ("API Colombia", "https://www.businesswire.com/news/home/20220616005106/en/Genentech-Provides-Update-on-Alzheimers-Prevention-Initiative-Study-Evaluating-Crenezumab-in-Autosomal-Dominant-Alzheimers-Disease", "Crenezumab",
+     "Members of a Colombian family with an early-onset PSEN1 mutation", "252 enrolled",
+     pill("stop", "No significant benefit") + " Numerical trends favoured the drug, none significant (2022)."),
+    ("Generation Study 1", "https://clinicaltrials.gov/study/NCT02565511", "Umibecestat", "Cognitively unimpaired APOE4 homozygotes aged 60–75", "478 randomized",
+     pill("stop", "Stopped 2019") + " Umibecestat worsened cognition slightly; the program ended."),
 ]
+
+
+def drug_link(name, text=None):
+    return f'<a href="drugs.html#{slug("drug", name)}">{text or name}</a>'
+
+
+tr_rows = []
+for name, url, drug, who, n, res in TRIALS:
+    ext = "Registry" if "clinicaltrials.gov" in url else "Source"
+    drug_cell = drug_link(drug) + (" or " + drug_link("CAD106") if name == "Generation Study 1" else "")
+    tr_rows.append((f'<span class="dname">{name}</span>' + link_pair(f"drugs.html#{slug('drug', drug)}", "Drug", url, ext),
+                    drug_cell, who, n, pill_link(res, url)))
 pages["trials.html"] = head("Prevention trials", "Drug trials before symptoms",
     "Trials that treat people who have Alzheimer’s changes, or very high genetic risk, before memory problems begin. Ongoing trials first.") + f"""
     <section>
-{table("Prevention drug trials", ["Trial", "Drug", "Who", "Status and result"], tr_rows)}
-      <p class="note">Status changes often; each trial name links to its ClinicalTrials.gov record. To volunteer, search {src("https://clinicaltrials.gov/search?cond=Alzheimer+Disease&term=prevention", "ClinicalTrials.gov")} or use the Alzheimer’s Association’s {src("https://www.alz.org/alzheimers-dementia/research_progress/clinical-trials/trialmatch", "TrialMatch")}.</p>
+{table("Prevention drug trials", ["Trial", "Drug", "Who", "Participants", "Status and result"], tr_rows, ids=[slug("trial", t[0]) for t in TRIALS])}
+      <p class="note">Status changes often; each status label links to the trial’s external record. To volunteer, search {src("https://clinicaltrials.gov/search?cond=Alzheimer+Disease&term=prevention", "ClinicalTrials.gov")} or use the Alzheimer’s Association’s {src("https://www.alz.org/alzheimers-dementia/research_progress/clinical-trials/trialmatch", "TrialMatch")}.</p>
     </section>"""
+
+# ---------- Drugs ----------
+# (name, company, type, internal href, internal label, external href, external label, note)
+DRUGS = [
+    ("In prevention trials now", [
+        ("Donanemab", "Kisunla; Eli Lilly", "Anti-amyloid antibody, IV", "trials.html#trial-trailblazer-alz-3", "Trial", "https://dailymed.nlm.nih.gov/dailymed/search.cfm?query=kisunla", "FDA label",
+         "Approved for early symptomatic Alzheimer’s; being tested before symptoms in TRAILBLAZER-ALZ 3."),
+        ("Lecanemab", "Leqembi; Eisai and Biogen", "Anti-amyloid antibody, IV or under-the-skin", "trials.html#trial-ahead-3-45", "Trial", "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9d1ff786-e577-410a-a273-c4d7d0e4e975", "FDA label",
+         "Approved for early symptomatic Alzheimer’s; being tested before symptoms in AHEAD 3-45."),
+        ("HT-4253", "Halia Therapeutics", "Oral LRRK2 inhibitor", "trials.html#trial-ht-4253", "Trial", "https://clinicaltrials.gov/study/NCT07399171", "Registry",
+         "Investigational; Phase 2a in APOE4 carriers who have no symptoms."),
+    ]),
+    ("Tested for prevention and failed or stopped", [
+        ("Solanezumab", "Eli Lilly", "Anti-amyloid antibody", "trials.html#trial-a4-study", "Trial", "https://doi.org/10.1056/NEJMoa2305032", "Results",
+         "No benefit in the A4 Study."),
+        ("Crenezumab", "Genentech (Roche)", "Anti-amyloid antibody", "trials.html#trial-api-colombia", "Trial", "https://www.businesswire.com/news/home/20220616005106/en/Genentech-Provides-Update-on-Alzheimers-Prevention-Initiative-Study-Evaluating-Crenezumab-in-Autosomal-Dominant-Alzheimers-Disease", "Results",
+         "No significant benefit in a family with early-onset Alzheimer’s."),
+        ("Umibecestat", "Novartis and Amgen", "BACE inhibitor", "trials.html#trial-generation-study-1", "Trial", "https://clinicaltrials.gov/study/NCT02565511", "Registry",
+         "Stopped in 2019 after mild cognitive worsening."),
+        ("CAD106", "Novartis", "Active amyloid vaccine", "trials.html#trial-generation-study-1", "Trial", "https://clinicaltrials.gov/study/NCT02565511", "Registry",
+         "Halted in 2019 with the rest of the Generation Program."),
+    ]),
+    ("Existing medicines with prevention signals", [
+        ("Blood-pressure medicines", "Generic", "Lower blood pressure", "evidence.html#ev-sprint-mind", "Evidence", "https://doi.org/10.1001/jama.2018.21442", "Results",
+         "Intensive treatment reduced mild cognitive impairment in SPRINT MIND; not approved for dementia prevention."),
+        ("Cholesterol-lowering medicines", "Generic", "Lower LDL cholesterol", "risk.html", "Risk factors", LANCET, "Lancet Commission",
+         "High midlife LDL cholesterol is linked to about 7% of dementia; trial evidence for prevention is still limited."),
+        ("Shingles vaccine", "Older live vaccine (Zostavax)", "Vaccine against herpes zoster", "evidence.html#ev-shingles", "Evidence", "https://www.sciencedaily.com/releases/2025/04/250402122149.htm", "Study",
+         "About 20% fewer new dementia diagnoses in a Wales natural experiment; not a randomized trial."),
+    ]),
+]
+body = head("Drugs", "Drugs and prevention",
+    "No drug is approved to prevent Alzheimer’s disease. These are the medicines being tested before symptoms, those that failed, and existing medicines with prevention signals.") + "\n    <section>\n"
+for g, items in DRUGS:
+    rows, ids = [], []
+    for name, co, typ, ih, il, eh, el, note in items:
+        rows.append((f'<span class="dname">{name}</span><span class="maker">{co}</span>' + link_pair(ih, il, eh, el), typ, note))
+        ids.append(slug("drug", name))
+    body += f'    <div class="group">\n      <h2>{g}</h2>\n{table(g, ["Drug", "Type", "For prevention"], rows, ids=ids)}\n    </div>\n'
+body += DISCLAIMER + "\n    </section>"
+pages["drugs.html"] = body
 
 # ---------- Resources ----------
 res_rows = [
@@ -268,6 +348,15 @@ css += """
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--stop:#ec6b93}}
 :root[data-theme="dark"]{--stop:#ec6b93}
 .pill.stop{color:var(--stop)}
+.dname{font-weight:600;display:block}
+.maker{display:block;font-weight:400;font-size:13px;color:var(--muted);margin-top:2px}
+.xlinks{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:6px;font-size:13px;font-weight:400}
+.xlinks a{white-space:nowrap}
+a.lnk-int{color:var(--e4);text-decoration:none;border-bottom:1px solid currentColor}
+a.lnk-ext{color:var(--muted);text-decoration:underline dotted;text-underline-offset:3px}
+a.pill-link{text-decoration:none}
+table.data tr[id]{scroll-margin-top:24px}
+table.data tr:target td{background:var(--e4-soft)}
 """
 OUT.joinpath("style.css").write_text(css)
 for fname, label, title in PAGES:
