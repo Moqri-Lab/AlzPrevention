@@ -154,10 +154,10 @@ pages = {}
 cards = [
     ("risk.html", "Risk factors", "The 14 changeable risk factors linked to nearly half of dementia."),
     ("evidence.html", "What works", "What randomized trials and natural experiments show so far."),
+    ("drugs.html", "Drugs", "Medicines tested for prevention, and those with early signals."),
     ("trials.html", "Prevention trials", "Drug trials in people with Alzheimer’s changes but no symptoms."),
     ("resources.html", "Resources", "Cohorts and datasets for prevention research."),
-    ("https://apoe4.science", "APOE4 carriers", "Sister site for people with two copies of APOE4, the highest-risk common genotype."),
-    ("drugs.html", "Drugs", "Medicines tested for prevention, and those with early signals."),
+    ("https://apoe4.science", "APOE4 carriers ↗", "Sister site apoe4.science: for people with two copies of APOE4, the highest-risk common genotype."),
 ]
 pages["index.html"] = f"""    <div class="hero">
       <div>
