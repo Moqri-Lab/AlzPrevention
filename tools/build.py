@@ -151,6 +151,15 @@ DISCLAIMER = '      <p class="disclaimer">This site is for education and is not 
 pages = {}
 
 # ---------- Home ----------
+UPDATES = [  # newest first; the home page shows the latest six
+    ("Nov 2026", 'New <a href="drugs.html">Drugs</a> page: medicines in prevention trials, those that failed, and existing medicines with prevention signals.'),
+    ("Nov 2026", '<a href="trials.html">Prevention trials</a> now show participant numbers, with each drug linked to its entry.'),
+    ("Nov 2026", 'The site is now live at <a href="https://alzprevent.org">alzprevent.org</a>.'),
+    ("Nov 2026", 'Every figure now links to its source; new <a href="papers.html">Papers</a> page.'),
+    ("Nov 2026", 'FINGER, SPRINT MIND and ACHIEVE details checked against the published trials on <a href="evidence.html">What works</a>.'),
+    ("Nov 2026", 'Site launched, as a sister site to <a href="https://apoe4.science">apoe4.science</a>.'),
+]
+
 cards = [
     ("risk.html", "Risk factors", "The 14 changeable risk factors linked to nearly half of dementia."),
     ("evidence.html", "What works", "What randomized trials and natural experiments show so far."),
@@ -171,6 +180,15 @@ pages["index.html"] = f"""    <div class="hero">
       <div class="cards">
 """ + "\n".join(f'        <a class="card" href="{f}"><h3>{t}</h3><p>{d}</p></a>' for f, t, d in cards) + """
       </div>
+    </section>
+    <section>
+      <div class="sec-head">
+        <p class="label">Recently updated</p>
+        <h2>What’s new</h2>
+      </div>
+      <ul class="refs">
+""" + "\n".join(f'        <li><span class="asof">{d}</span> · {t}</li>' for d, t in UPDATES[:6]) + """
+      </ul>
     </section>"""
 
 # ---------- Risk factors ----------
