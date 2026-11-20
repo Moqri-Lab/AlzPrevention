@@ -77,7 +77,7 @@ def shell(fname, title, body):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=Public+Sans:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -93,7 +93,7 @@ def shell(fname, title, body):
   </main>
   <footer>
     <span>Maintained by Mahdi Moqri, PhD, in a personal capacity. An educational resource, not medical advice. Sister site: <a href="https://apoe4.science">apoe4.science</a></span>
-    <span class="updated">Last reviewed November 2026</span>
+    <span class="updated">Last reviewed November 2026 · <a href="about.html">About</a> · <a href="https://github.com/Moqri-Lab/AlzPrevention/issues">Suggest a correction</a></span>
   </footer>
 </div>
 {('<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon=' + chr(39) + '{"token": "' + CF_ANALYTICS_TOKEN + '"}' + chr(39) + '></script>') if CF_ANALYTICS_TOKEN else ''}
@@ -151,7 +151,18 @@ DISCLAIMER = '      <p class="disclaimer">This site is for education and is not 
 pages = {}
 
 # ---------- Home ----------
+def report_link(text):
+    """Small link that opens a GitHub issue prefilled with the item being reported."""
+    import urllib.parse as _up
+    plain = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", text)).strip()
+    title = "Correction: " + (plain[:70] + "…" if len(plain) > 70 else plain)
+    body = f"Item: {plain}\n\nWhat is wrong:\n\nCorrect information, with a source link if you have one:\n"
+    url = "https://github.com/Moqri-Lab/AlzPrevention/issues/new?" + _up.urlencode({"title": title, "body": body})
+    return f'<a class="report" href="{url}" aria-label="Report a correction to this update">Report a correction</a>'
+
+
 UPDATES = [  # newest first; the home page shows the latest six
+    ("Nov 2026", '<a href="trials.html#trial-preventron">PrevenTRON</a>, a 1,600-person Phase 3 prevention trial of trontinemab, added; 20-year <a href="evidence.html#ev-active">ACTIVE</a> results; semaglutide’s negative EVOKE trials on <a href="drugs.html">Drugs</a>.'),
     ("Nov 2026", 'New <a href="drugs.html">Drugs</a> page: medicines in prevention trials, those that failed, and existing medicines with prevention signals.'),
     ("Nov 2026", '<a href="trials.html">Prevention trials</a> now show participant numbers, with each drug linked to its entry.'),
     ("Nov 2026", 'The site is now live at <a href="https://alzprevent.org">alzprevent.org</a>.'),
@@ -187,7 +198,7 @@ pages["index.html"] = f"""    <div class="hero">
         <h2>What’s new</h2>
       </div>
       <ul class="refs">
-""" + "\n".join(f'        <li><span class="asof">{d}</span> · {t}</li>' for d, t in UPDATES[:6]) + """
+""" + "\n".join(f'        <li><span class="asof">{d}</span> · {t} {report_link(t)}</li>' for d, t in UPDATES[:6]) + """
       </ul>
     </section>"""
 
@@ -227,12 +238,13 @@ ev_rows = [
     (src("https://alz.org/us-pointer/study-results", "U.S. POINTER"), "Two-year structured versus self-guided lifestyle program", "2,111 sedentary adults aged 60–79 at risk", pill("done", "Benefit") + " Both groups improved; the structured program improved global cognition more." + cite("https://practicalneurology.com/news/us-pointer-study-results-a-structured-lifestyle-intervention-improved-cognition-in-older-adults/2475903/")),
     (src("https://doi.org/10.1001/jama.2018.21442", "SPRINT MIND"), "Intensive blood pressure control (systolic under 120) versus standard (under 140)", "Adults with high blood pressure", pill("done", "Partial benefit") + " Fewer cases of mild cognitive impairment (14.6 vs 18.3 per 1,000 person-years); the drop in dementia was not statistically significant. The trial stopped early."),
     (src("https://doi.org/10.1016/S0140-6736(23)01406-X", "ACHIEVE"), "Hearing aids and counselling versus health education", "977 older adults with hearing loss", pill("stop", "No overall benefit") + " No slowing of cognitive decline over three years overall; in a higher-risk subgroup from the ARIC study, decline was about 48% slower." + cite("https://aaic.alz.org/releases_2023/hearing-aids-slow-cognitive-decline.asp")),
+    (src("https://doi.org/10.1002/trc2.70197", "ACTIVE") + " (US)", "Computerized speed-of-processing training: 10 sessions, with booster sessions for some, versus no training", "2,832 adults aged 65 and over", pill("done", "Signal") + " After 20 years, people who had speed training with boosters had 25% fewer dementia diagnoses in Medicare claims than controls (40% vs 49%); no effect without boosters, or with memory or reasoning training. A long-term follow-up, not the trial’s main result; the training software is sold commercially."),
     (src("https://www.sciencedaily.com/releases/2025/04/250402122149.htm", "Shingles vaccine, Wales"), "Natural experiment: vaccine eligibility set by date of birth", "Older adults born either side of 2 September 1933", pill("done", "Signal") + " Vaccination reduced new dementia diagnoses by about 3.5 percentage points over seven years (about 20% relative). Older live vaccine; not a randomized trial." + cite("https://www.news-medical.net/news/20250408/Shingles-vaccination-associated-with-reduction-in-probability-of-new-dementia-diagnosis.aspx")),
 ]
 pages["evidence.html"] = head("What works", "Evidence from trials and natural experiments",
     "Randomized trials of lifestyle and medical approaches, and the strongest natural experiments, on preventing cognitive decline and dementia.") + f"""
     <section>
-{table("Prevention evidence", ["Study", "Intervention", "Who", "Result"], ev_rows, ids=["ev-finger", "ev-us-pointer", "ev-sprint-mind", "ev-achieve", "ev-shingles"])}
+{table("Prevention evidence", ["Study", "Intervention", "Who", "Result"], ev_rows, ids=["ev-finger", "ev-us-pointer", "ev-sprint-mind", "ev-achieve", "ev-active", "ev-shingles"])}
       <p class="note">Benefits so far are on cognitive test scores or milder outcomes; no lifestyle trial has yet shown fewer dementia diagnoses as its main result.</p>
 {DISCLAIMER}
     </section>"""
@@ -240,6 +252,8 @@ pages["evidence.html"] = head("What works", "Evidence from trials and natural ex
 # ---------- Trials ----------
 # (name, registry or record URL, drug as named on the Drugs page, who, participants, status-and-result)
 TRIALS = [
+    ("PrevenTRON", "https://clinicaltrials.gov/study/NCT07717411", "Trontinemab", "Adults aged 55–80 with no symptoms but a raised blood p-tau217", "1,600 planned",
+     pill("recruit", "Recruiting") + " Phase 3, started October 2026; measures time to the first symptoms."),
     ("TRAILBLAZER-ALZ 3", "https://clinicaltrials.gov/study/NCT05026866", "Donanemab", "Cognitively unimpaired adults with Alzheimer’s pathology", "About 3,000 enrolled",
      pill("run", "Fully enrolled") + " Primary completion expected November 2027."),
     ("AHEAD 3-45", "https://clinicaltrials.gov/study/NCT04468659", "Lecanemab", "Adults with amyloid but no symptoms", "About 1,400 enrolled",
@@ -281,6 +295,8 @@ DRUGS = [
          "Approved for early symptomatic Alzheimer’s; being tested before symptoms in TRAILBLAZER-ALZ 3."),
         ("Lecanemab", "Leqembi; Eisai and Biogen", "Anti-amyloid antibody, IV or under-the-skin", "trials.html#trial-ahead-3-45", "Trial", "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9d1ff786-e577-410a-a273-c4d7d0e4e975", "FDA label",
          "Approved for early symptomatic Alzheimer’s; being tested before symptoms in AHEAD 3-45."),
+        ("Trontinemab", "Roche", "Anti-amyloid antibody that crosses into the brain via a transferrin-receptor shuttle", "trials.html#trial-preventron", "Trial", "https://clinicaltrials.gov/study/NCT07717411", "Registry",
+         "Investigational; Phase 3 in early symptomatic Alzheimer’s and, since October 2026, before symptoms in PrevenTRON."),
         ("HT-4253", "Halia Therapeutics", "Oral LRRK2 inhibitor", "trials.html#trial-ht-4253", "Trial", "https://clinicaltrials.gov/study/NCT07399171", "Registry",
          "Investigational; Phase 2a in APOE4 carriers who have no symptoms."),
     ]),
@@ -299,6 +315,8 @@ DRUGS = [
          "Intensive treatment reduced mild cognitive impairment in SPRINT MIND; not approved for dementia prevention."),
         ("Cholesterol-lowering medicines", "Generic", "Lower LDL cholesterol", "risk.html", "Risk factors", LANCET, "Lancet Commission",
          "High midlife LDL cholesterol is linked to about 7% of dementia; trial evidence for prevention is still limited."),
+        ("Semaglutide", "Novo Nordisk", "GLP-1 drug for diabetes and weight loss", "", "", "https://pubmed.ncbi.nlm.nih.gov/41865758/", "Results",
+         "Linked to less dementia in observational studies, but did not slow decline in people who already had early Alzheimer’s (EVOKE and EVOKE+, 3,808 people, 2026). Not tested before symptoms."),
         ("Shingles vaccine", "Older live vaccine (Zostavax)", "Vaccine against herpes zoster", "evidence.html#ev-shingles", "Evidence", "https://www.sciencedaily.com/releases/2025/04/250402122149.htm", "Study",
          "About 20% fewer new dementia diagnoses in a Wales natural experiment; not a randomized trial."),
     ]),
@@ -339,6 +357,7 @@ PAPERS = [
     ("Lifestyle and medical trials", [
         ("Ngandu T, et al. A 2 year multidomain intervention of diet, exercise, cognitive training, and vascular risk monitoring versus control to prevent cognitive decline in at-risk elderly people (FINGER): a randomised controlled trial. <i>Lancet</i> 2015.", "First large trial to show a multidomain lifestyle program helps cognition.", "https://doi.org/10.1016/S0140-6736(15)60461-5"),
         ("SPRINT MIND Investigators (Williamson JD, et al.). Effect of intensive vs standard blood pressure control on probable dementia. <i>JAMA</i> 2019.", "Intensive blood pressure control reduced mild cognitive impairment.", "https://doi.org/10.1001/jama.2018.21442"),
+        ("Coe NB, et al. Impact of cognitive training on claims-based diagnosed dementia over 20 years: evidence from the ACTIVE study. <i>Alzheimer’s &amp; Dementia: Translational Research &amp; Clinical Interventions</i> 2026.", "Speed training with boosters was followed by 25% fewer dementia diagnoses over 20 years.", "https://doi.org/10.1002/trc2.70197"),
         ("Lin FR, et al. Hearing intervention versus health education control to reduce cognitive decline in older adults with hearing loss in the USA (ACHIEVE). <i>Lancet</i> 2023.", "No overall effect; possible benefit in people at higher risk.", "https://doi.org/10.1016/S0140-6736(23)01406-X"),
         ("U.S. POINTER Study Group. Two-year results of the U.S. POINTER lifestyle trial. Published in <i>JAMA</i>, July 2025.", "Both programs improved cognition; the structured one more.", "https://alz.org/us-pointer/study-results"),
         ("Eyting M, et al. A natural experiment on the effect of herpes zoster vaccination on dementia. <i>Nature</i> 2025.", "Shingles vaccination linked to fewer new dementia diagnoses in Wales.", "https://flex.uni-frankfurt.de/?p=3429"),
