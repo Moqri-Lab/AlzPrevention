@@ -92,7 +92,7 @@ def shell(fname, title, body):
 {body}
   </main>
   <footer>
-    <span>Maintained by Mahdi Moqri, PhD, in a personal capacity. An educational resource, not medical advice. Sister site: <a href="https://apoe4.science">apoe4.science</a></span>
+    <span>Maintained by <a href="https://www.linkedin.com/in/mahdimo/">Mahdi Moqri, PhD</a>, in a personal capacity. An educational resource, not medical advice. Sister site: <a href="https://apoe4.science">apoe4.science</a></span>
     <span class="updated">Last reviewed November 2026 · <a href="about.html">About</a> · <a href="https://github.com/Moqri-Lab/AlzPrevention/issues">Suggest a correction</a></span>
   </footer>
 </div>
@@ -376,7 +376,7 @@ pages["about.html"] = head("About", "About this site",
     "What this resource is, who maintains it, and how information is chosen.") + f"""
     <section>
       <div class="prose">
-        <p>This site is maintained by Mahdi Moqri, PhD, in a personal capacity. It is not an official resource of any employer or institution, and it is not medical advice.</p>
+        <p>This site is maintained by <a href="https://www.linkedin.com/in/mahdimo/">Mahdi Moqri, PhD</a>, in a personal capacity. It is not an official resource of any employer or institution, and it is not medical advice.</p>
         <p>Every figure links to its source, preferring peer-reviewed papers, trial registries and official reports. Trial results are shown as reported, and observational findings are labelled as such.</p>
         <p>It is a sister site to {src("https://apoe4.science", "apoe4.science")}, which focuses on people with two copies of APOE4.</p>
       </div>
