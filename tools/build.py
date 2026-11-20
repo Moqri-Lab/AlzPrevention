@@ -241,7 +241,7 @@ pages["evidence.html"] = head("What works", "Evidence from trials and natural ex
 # (name, registry or record URL, drug as named on the Drugs page, who, participants, status-and-result)
 TRIALS = [
     ("TRAILBLAZER-ALZ 3", "https://clinicaltrials.gov/study/NCT05026866", "Donanemab", "Cognitively unimpaired adults with Alzheimer’s pathology", "About 3,000 enrolled",
-     pill("run", "Fully enrolled") + " Primary completion expected October 2027."),
+     pill("run", "Fully enrolled") + " Primary completion expected November 2027."),
     ("AHEAD 3-45", "https://clinicaltrials.gov/study/NCT04468659", "Lecanemab", "Adults with amyloid but no symptoms", "About 1,400 enrolled",
      pill("run", "Fully enrolled") + " Primary completion expected December 2028."),
     ("HT-4253", "https://clinicaltrials.gov/study/NCT07399171", "HT-4253", "Biomarker-positive APOE4 carriers in Abu Dhabi", "112 planned",
